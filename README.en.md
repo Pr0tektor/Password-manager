@@ -4,6 +4,8 @@
 
 [Русский](README.md) | **English** · [Full user guide](docs/USER_GUIDE_EN.md) · [Printable bilingual guide](docs/guide.html)
 
+**[Open the app →](https://pr0tektor.github.io/Password-manager/)** · [Online user guide](https://pr0tektor.github.io/Password-manager/docs/guide.html#en)
+
 A personal home for your logins, passwords and notes. Encryption happens in your browser, with a master password only you know. Import your saved Chrome passwords, find an account quickly and generate stronger passwords without creating another account.
 
 ## What you get
@@ -20,9 +22,7 @@ No subscription, analytics or package installation is required. Google authoriza
 
 ## Quick start
 
-For everyday use, open the app at its HTTPS address and install it from your browser. **Users do not need Node.js or a running local server.** A public version has not been hosted yet: the owner must publish the files first, for example with GitHub Pages. Uploading source code to GitHub does not create a live app address by itself.
-
-After publication:
+Open **[Password Manager](https://pr0tektor.github.io/Password-manager/)** and install it from your browser. **Users do not need Node.js or a running local server.** The app is hosted on GitHub Pages over HTTPS; your passwords stay encrypted in your browser.
 
 1. Open the app address in Chrome, Edge or Safari.
 2. Choose your language and create a vault.
@@ -40,7 +40,7 @@ npm start
 
 Open **http://localhost:4173**. The server is needed for the initial local load and updates. Once the offline cache is ready, test reopening without it using dummy entries.
 
-Opening index.html directly is unsupported. Localhost is accessible only on that device; installing on a phone requires a separately hosted HTTPS address. This repository is source code, not an automatically published website.
+Opening index.html directly is unsupported. Localhost is accessible only on that device. On a phone, use the [public HTTPS version](https://pr0tektor.github.io/Password-manager/). To move local entries to the hosted address, export and import an encrypted backup: storage does not move between addresses automatically.
 
 ## Google Drive: one setup for the application
 

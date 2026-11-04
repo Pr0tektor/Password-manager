@@ -1,7 +1,7 @@
 // Cache only the public application shell. Never cache vaults, exports, uploads,
 // OAuth responses, Drive files, API requests or arbitrary navigation targets.
 const CACHE_PREFIX = 'password-manager-shell-';
-const CACHE_NAME = CACHE_PREFIX + '1.1.0';
+const CACHE_NAME = CACHE_PREFIX + '1.1.0-pages';
 const FILES = [
   './', './index.html', './styles.css', './app.mjs', './crypto.mjs', './vault.mjs',
   './csv.mjs', './i18n.mjs', './pwa.mjs', './drive.mjs', './drive-ui.mjs', './config.mjs',

@@ -8,7 +8,7 @@ function harness(){
   const scope='https://example.test/Password-manager/';
   const cache={addAll:async urls=>{added.push(...urls);},match:async request=>request.url.endsWith('app.mjs')?new Response('cached-module'):undefined};
   const self={location:{href:scope+'sw.js'},addEventListener:(name,fn)=>{handlers[name]=fn;},clients:{claim:async()=>{claimed++;}},skipWaiting:async()=>{skipped++;}};
-  vm.runInNewContext(source,{self,URL,caches:{open:async()=>cache,keys:async()=>['other-app-cache','password-manager-shell-old','password-manager-shell-1.1.0'],delete:async name=>{deleted.push(name);}},fetch:async request=>{requests.push(request);return new Response('network');}});
+  vm.runInNewContext(source,{self,URL,caches:{open:async()=>cache,keys:async()=>['other-app-cache','password-manager-shell-old','password-manager-shell-1.1.0-pages'],delete:async name=>{deleted.push(name);}},fetch:async request=>{requests.push(request);return new Response('network');}});
   return {handlers,added,deleted,requests,scope,get skipped(){return skipped;},get claimed(){return claimed;}};
 }
 test('both localized manifests have a stable identity, scoped relative URLs and valid install icons',async()=>{

@@ -16,7 +16,7 @@ This is an early release without an independent security audit. Start with test 
 
 Users do not need to install Node.js or keep a server window open. The owner hosts the app once; users then open its address.
 
-**A public version has not been hosted yet.** These steps become available after publication, for example on GitHub Pages. The repository itself contains source code.
+**[Open the app](https://pr0tektor.github.io/Password-manager/)**. It is hosted on GitHub Pages over HTTPS and available on computers and phones.
 
 1. Open the app's HTTPS address in Chrome, Edge or Safari.
 2. Choose your language and create a vault as described below.
@@ -36,7 +36,7 @@ Use the same HTTPS address on a phone, then transfer the vault with an encrypted
 
 You do not need npm install or additional package dependencies. Opening index.html by double-click is unsupported: modules, encryption and PWA features require localhost or HTTPS.
 
-The server listens only on your computer. On a phone, localhost refers to that phone, so your computer’s local app will not be reachable there at the same address. Installing on a phone requires a separately hosted HTTPS version. Hosting is not enabled automatically.
+The server listens only on your computer. On a phone, localhost refers to that phone. Use the [hosted HTTPS version](https://pr0tektor.github.io/Password-manager/) on a phone. To move entries from localhost to the public app, save an encrypted backup first, then restore it at the new address: these are separate storage locations.
 
 ## 3. Choose your language
 
@@ -142,7 +142,7 @@ Complete these steps once for the app, not for every backup.
 3. In **Google Auth Platform**, complete Branding, Audience and contact details. For personal testing with a regular Google account, select External and add your account under Test users while the app is in Testing mode.
 4. Under Data Access, request **https://www.googleapis.com/auth/drive.file**. This covers files used by this app, rather than your entire Drive. For public distribution, complete Google’s publishing/verification requirements if requested by the console.
 5. In **Clients** or **APIs & Services → Credentials**, create **OAuth Client ID → Web application**.
-6. Add **http://localhost** and **http://localhost:4173** as Authorized JavaScript origins for the local app. Add the exact HTTPS origin for a hosted build, such as https://passwords.example.com. Origins do not contain a path, fragment or page route. A GitHub Pages subfolder uses an origin such as https://username.github.io.
+6. Add **https://pr0tektor.github.io** as an Authorized JavaScript origin for the hosted app. For local development, also add **http://localhost** and **http://localhost:4173**. Origins do not contain a path, fragment or page route: do not include `/Password-manager/` in this field. For a self-hosted copy on a different domain, use its exact HTTPS origin.
 7. This browser popup flow does not need a client secret or a server redirect callback. Never put a client secret into application code or GitHub.
 8. Copy the Client ID ending in .apps.googleusercontent.com.
 9. Unlock the vault, open **Google Drive → Set up Google Drive**, paste the ID and choose **Save configuration**. This stores the public Client ID in this browser.

@@ -87,8 +87,9 @@ export async function openVault(text, password) {
   try { plaintext = new Uint8Array(await crypto.subtle.decrypt({ name: 'AES-GCM', iv, additionalData: aad, tagLength: 128 }, key, ciphertext)); }
   catch { fail('Неверный мастер-пароль или повреждённая копия.'); }
   try {
-    const payload = JSON.parse(decoder.decode(plaintext));
-    if (payload.version !== 1) fail();
+    let payload;
+    try { payload = JSON.parse(decoder.decode(plaintext)); } catch { fail(); }
+    if (!payload || payload.version !== 1) fail();
     return { key, salt, envelope, entries: validateEntries(payload.entries) };
   } finally { plaintext.fill(0); }
 }

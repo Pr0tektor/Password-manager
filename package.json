@@ -1,9 +1,9 @@
 {
   "name": "local-password-manager",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "description": "Локальный менеджер паролей с шифрованием в браузере",
   "engines": { "node": ">=22" },
-  "scripts": { "start": "node server.mjs", "check": "node scripts/check.mjs", "test": "node --test tests/*.test.mjs" }
+  "scripts": { "start": "node server.mjs", "check": "node scripts/check.mjs", "test": "node --test tests/*.test.mjs", "docs": "node scripts/build-guide.mjs" }
 }

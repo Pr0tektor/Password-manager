@@ -1,5 +1,23 @@
 # Changelog / История изменений
 
+## 1.2.0
+
+### Русский
+
+- До 20 именованных API-ключей в записи: скрытие, временный показ, добавление и удаление полей. Пароль аккаунта можно не заполнять, если есть API-ключ.
+- Компактные значки двух листов для копирования рядом с логином, паролем, ключами и результатом генератора, без видимых надписей «Копировать».
+- API-ключи и их названия шифруются, включаются в резервные копии, сохраняются при импорте и учитываются при обнаружении дубликатов.
+- Копии с API-ключами используют аутентифицированный формат 2: прежние приложения отклоняют их вместо потери неизвестных полей. Старые копии формата 1 поддерживаются.
+- Обновлены интерфейс и инструкции RU/EN, офлайн-кэш и проверки. Исправление мобильного импорта из 1.1.1 включено.
+
+### English
+
+- Up to 20 named API keys per entry with concealed values, temporary reveal, and removable fields. Account passwords are optional when a key is present.
+- Compact two-sheet copy icons beside usernames, passwords, keys and generated passwords, without visible “Copy” labels.
+- Key names and values are encrypted, backed up, restored and included in duplicate detection.
+- API-key backups use authenticated format 2: older apps reject them instead of discarding unknown fields. Legacy format 1 backups remain supported.
+- Updated RU/EN UI, guides, offline cache and tests. Includes the 1.1.1 mobile import fix.
+
 ## 1.1.1
 
 ### Русский

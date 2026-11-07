@@ -47,7 +47,7 @@ const pairs = `
 Добавить первую запись	Add your first entry
 Данные сохраняются в зашифрованном виде в этом браузере.	Vault data is stored encrypted in this browser.
 Ваше устройство. Ваш ключ. Ваш доступ.	Your device. Your key. Your access.
-Версия 1.1.1	Version 1.1.1
+Версия 1.2.0	Version 1.2.0
 Установить приложение	Install app
 Закрыть	Close
 Приложение откроется в отдельном окне с иконкой на вашем устройстве.	Launch the app in its own window from an icon on your device.
@@ -220,6 +220,26 @@ English: detailed user guide	English: detailed user guide
 Офлайн-кэш очищен. Снова откройте приложение при подключении к сети.	The offline cache was cleared. Reopen the app with a network connection.
 Менеджер паролей — Личное хранилище	Password Manager — Personal vault
 Локальное зашифрованное хранилище паролей.	A local encrypted password vault.
+(или API-ключ ниже)	(or an API key below)
+API-ключи	API keys
+Добавьте несколько ключей с названиями. Ключи шифруются вместе с записью.	Add several named keys. Keys are encrypted with the entry.
+До 20 ключей в одной записи. Для копирования нажмите значок двух листов рядом с полем.	Up to 20 keys per entry. Use the two-sheet icon next to a field to copy it.
+Добавить API-ключ	Add API key
+Название ключа	Key name
+Например, основной или тестовый	For example, production or test
+Значение API-ключа	API key value
+Копировать API-ключ	Copy API key
+Удалить API-ключ	Remove API key
+Показать API-ключ	Show API key
+Скрыть API-ключ	Hide API key
+API-ключ {number}	API key {number}
+API-ключ «{label}»	API key “{label}”
+Копировать логин	Copy username
+Копировать пароль	Copy password
+Заполните название и значение каждого API-ключа или удалите пустое поле.	Enter a name and value for each API key, or remove the incomplete field.
+Введите пароль или добавьте API-ключ.	Enter a password or add an API key.
+В одной записи можно сохранить до 20 API-ключей.	An entry can contain up to 20 API keys.
+У каждого API-ключа должны быть название до 100 символов и значение до 10000 символов.	Each API key needs a name of up to 100 characters and a value of up to 10000 characters.
 `;
 export const english = Object.freeze(Object.fromEntries(pairs.trim().split('\n').map(line => line.split('\t'))));
 let locale = 'ru';

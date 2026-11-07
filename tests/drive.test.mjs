@@ -17,15 +17,16 @@ test('Drive uploads only a validated encrypted envelope, with limited-scope auth
   client.authorizeToken('test-token',3600,DRIVE_SCOPE);
   const master='drive test-only master phrase'; const opened=await createVault(master);
   const now='2026-11-04T10:00:00.000Z';
-  const entry={id:'a',title:'Private name',username:'private@example.test',password:'private-test-secret',url:'https://example.test/',notes:'private note',createdAt:now,updatedAt:now};
+  const entry={id:'a',title:'Private name',username:'private@example.test',password:'private-test-secret',apiKeys:[{label:'private key label',value:'dummy-api-secret-only'}],url:'https://example.test/',notes:'private note',createdAt:now,updatedAt:now};
   const envelope=await encryptVault([entry],opened.key,opened.salt);
+  assert.equal(envelope.version,2);
   const result=await client.backup(JSON.stringify({...envelope,unexpectedPlaintext:'must-not-leak'}),{date:new Date(now)});
   assert.equal(result.id,'backup_id'); assert.equal(requests.length,2);
   const upload=requests[1]; assert.match(upload.options.headers['Content-Type'],/^multipart\/related; boundary=/);
   assert.equal(upload.options.headers.Authorization,'Bearer test-token'); assert.equal(upload.options.credentials,'omit'); assert.equal(upload.options.cache,'no-store');
-  for(const plaintext of [master,entry.title,entry.username,entry.password,entry.notes,'must-not-leak']) assert.equal(upload.options.body.includes(plaintext),false);
+  for(const plaintext of [master,entry.title,entry.username,entry.password,entry.notes,entry.apiKeys[0].label,entry.apiKeys[0].value,'must-not-leak']) assert.equal(upload.options.body.includes(plaintext),false);
   assert.ok(upload.options.body.includes(envelope.ciphertext));
-  assert.equal((await openVault(JSON.stringify(envelope),master)).entries.length,1);
+  assert.deepEqual((await openVault(JSON.stringify(envelope),master)).entries,[entry]);
 });
 test('malformed plaintext backup is rejected before any Google request',async()=>{
   let calls=0; const client=new DriveClient({fetchImpl:async()=>{calls++;return response({});}});

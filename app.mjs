@@ -5,6 +5,7 @@ import { generatePassword, MAX_BACKUP_BYTES, mergeEntries } from './crypto.mjs';
 import { parseChromeCsv } from './csv.mjs';
 import { VaultStore, STORAGE_KEY } from './vault.mjs';
 import { initializeSession } from './session.mjs';
+import { createApiKeyEditor, appendCopyIcon } from './api-keys.mjs';
 const $ = id => document.getElementById(id);
 let store;
 let editingId = null;
@@ -12,6 +13,7 @@ let deletingId = null;
 let busy = false;
 let uiEpoch = 0;
 let session;
+let apiKeyEditor;
 let toastTimer;
 let pendingCsvEntries = [];
 let csvReadEpoch = 0;
@@ -37,7 +39,7 @@ function clearDialog(dialog) {
     if (input.hasAttribute('data-secret') || input.id === 'entry-password') hidePassword(input);
   });
   dialog.querySelectorAll('.form-error').forEach(error => { error.textContent = ''; });
-  if (dialog.id === 'entry-dialog') editingId = null;
+  if (dialog.id === 'entry-dialog') { editingId = null; apiKeyEditor?.clear(); }
   if (dialog.id === 'delete-dialog') { deletingId = null; $('delete-description').textContent = ''; }
   if (dialog.id === 'chrome-dialog') {
     pendingCsvEntries = []; csvReadEpoch++;
@@ -102,6 +104,7 @@ async function action(errorId, work) {
     controls.forEach(button => { button.disabled = false; });
     if (submit) { $(submit).textContent = previous; $(submit).removeAttribute('aria-busy'); }
     if (!$('chrome-dialog').open || !pendingCsvEntries.length) $('chrome-submit').disabled = true;
+    apiKeyEditor.refresh();
     busy = false;
     if (!store.unlocked) syncAuth();
   }
@@ -147,7 +150,8 @@ function renderEntries() {
     const id = entry.id;
     const lookup = () => store.entries.find(item => item.id === id);
     if (entry.username) actions.append(iconButton('user', t('Копировать логин: {title}', { title: entry.title }), () => copy(lookup()?.username, t('Логин'))));
-    actions.append(iconButton('copy', t('Копировать пароль: {title}', { title: entry.title }), () => copy(lookup()?.password, t('Пароль'))), iconButton('edit', t('Открыть запись: {title}', { title: entry.title }), () => openEntry(id)), iconButton('delete', t('Удалить: {title}', { title: entry.title }), () => openDelete(id)));
+    if (entry.password) actions.append(iconButton('copy', t('Копировать пароль: {title}', { title: entry.title }), () => copy(lookup()?.password, t('Пароль'))));
+    actions.append(iconButton('edit', t('Открыть запись: {title}', { title: entry.title }), () => openEntry(id)), iconButton('delete', t('Удалить: {title}', { title: entry.title }), () => openDelete(id)));
     row.append(avatar, info, actions); fragment.append(row);
   }
   $('entry-list').replaceChildren(fragment);
@@ -159,6 +163,7 @@ function openEntry(id = null) {
   if (id && !entry) return;
   $('entry-heading').textContent = entry ? t('Ваша запись') : t('Новая запись');
   for (const field of ['title', 'username', 'password', 'url', 'notes']) $(`entry-${field}`).value = entry?.[field] || '';
+  apiKeyEditor.setKeys(entry?.apiKeys);
   $('entry-dialog').showModal(); $('entry-title').focus();
 }
 function openDelete(id) {
@@ -188,12 +193,18 @@ function initialize() {
   session = initializeSession({
     document, window, isUnlocked: () => store.unlocked,
     lock: reason => lock(reason === 'idle' ? t('Хранилище заблокировано после 5 минут бездействия.') : undefined),
-    onHidden: () => document.querySelectorAll('input[data-secret], #entry-password').forEach(hidePassword),
+    onHidden: () => { document.querySelectorAll('input[data-secret], #entry-password').forEach(hidePassword); apiKeyEditor?.conceal(); },
   });
+  apiKeyEditor = createApiKeyEditor({ document, container: $('entry-api-keys'), addButton: $('add-api-key'), onCopy: (value, label) => copy(value, t('API-ключ «{label}»', { label })) });
+  for (const [buttonId, inputId, label] of [['copy-entry-username', 'entry-username', 'Логин'], ['copy-entry-password', 'entry-password', 'Пароль']]) {
+    appendCopyIcon(document, $(buttonId)); $(buttonId).addEventListener('click', () => copy($(inputId).value, t(label)));
+  }
+  appendCopyIcon(document, $('copy-generated'));
   const driveUi = initializeDrive({ store, toast, beforeConnect: () => resetIdle() });
   const pwaUi = initializePwa({ beforeReload: () => lock(), toast });
   function languageChanged() {
     applyTranslations(); syncAuth();
+    for (const id of ['copy-entry-username', 'copy-entry-password', 'copy-generated']) $(id).title = $(id).getAttribute('aria-label');
     $('language-button').textContent = getLocale() === 'ru' ? 'English' : 'Русский';
     $('language-button').setAttribute('aria-label', getLocale() === 'ru' ? 'Switch to English' : 'Переключить на русский');
     if ($('chrome-button')) $('chrome-button').textContent = t('Импорт из Chrome');
@@ -211,6 +222,7 @@ function initialize() {
     $('toast').hidden = true;
     if ($('chrome-dialog').open) { clearDialog($('chrome-dialog')); }
     pwaUi.refresh(); driveUi.refresh();
+    apiKeyEditor.refresh();
     $('help-link').textContent = t('Помощь');
     $('help-link').href = `./docs/guide.html#${getLocale()}`;
   }
@@ -246,6 +258,9 @@ function initialize() {
       }
       const entries = store.entries; const existing = entries.find(entry => entry.id === editingId); const now = new Date().toISOString();
       const entry = { id: existing?.id || crypto.randomUUID(), title, username: $('entry-username').value.trim(), password: $('entry-password').value, url, notes: $('entry-notes').value, createdAt: existing?.createdAt || now, updatedAt: now };
+      const apiKeys = apiKeyEditor.readKeys();
+      if (!entry.password && !apiKeys.length) throw new Error(t('Введите пароль или добавьте API-ключ.'));
+      if (apiKeys.length) entry.apiKeys = apiKeys;
       await store.save(existing ? entries.map(item => item.id === existing.id ? entry : item) : [...entries, entry]);
       closeDialog($('entry-dialog')); renderEntries(); toast(t('Запись сохранена.'));
     });

@@ -11,6 +11,7 @@ A personal home for your logins, passwords and notes. Encryption happens in your
 ## What you get
 
 - **Local encrypted storage:** AES-256-GCM; your master password is never saved or sent.
+- **Multiple API keys per entry:** named, concealed values with a two-sheet copy icon. Keys can be stored without an account password.
 - **Russian and English:** switch the interface language without changing your entries.
 - **Installable PWA:** an app icon, a standalone window and offline access after the first successful cache setup.
 - **Chrome import:** CSV preview, duplicate detection and support for notes.
@@ -62,7 +63,7 @@ Data belongs to the exact browser profile and origin. Changing host, port or bro
 
 ## Technical notes
 
-Buildless HTML/CSS/JavaScript, no npm dependencies. Web Crypto uses AES-256-GCM and PBKDF2-HMAC-SHA-256 with 600,000 iterations, a random 16-byte salt and a fresh 12-byte IV per save. Existing version 1.0 backups remain compatible. A service worker caches an explicit public-asset allowlist; Google requests and vault files are excluded.
+Buildless HTML/CSS/JavaScript, no npm dependencies. Web Crypto uses AES-256-GCM and PBKDF2-HMAC-SHA-256 with 600,000 iterations, a random 16-byte salt and a fresh 12-byte IV per save. Existing 1.0/1.1 backups can still be imported. Backups containing API keys use format 2 and require app version 1.2.0 or later; older versions reject them rather than discard key fields. A service worker caches an explicit public-asset allowlist; Google requests and vault files are excluded.
 
 ```sh
 npm run check

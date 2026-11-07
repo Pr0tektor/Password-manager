@@ -31,7 +31,7 @@ test('wrong password and one-bit ciphertext tampering fail authentication', asyn
 });
 test('malformed envelopes, unbounded KDF work, bad IV and oversized imports are rejected', async () => {
   const { envelope } = await createVault(master);
-  for (const changes of [{ iterations: 1 }, { iterations: ITERATIONS * 100 }, { version: 2 }, { iv: 'AAAA' }, { salt: 'invalid!' }, { ciphertext: 'AA==' }, { cipher: 'AES-CBC' }]) assert.throws(() => parseEnvelope(JSON.stringify({ ...envelope, ...changes })));
+  for (const changes of [{ iterations: 1 }, { iterations: ITERATIONS * 100 }, { version: 3 }, { iv: 'AAAA' }, { salt: 'invalid!' }, { ciphertext: 'AA==' }, { cipher: 'AES-CBC' }]) assert.throws(() => parseEnvelope(JSON.stringify({ ...envelope, ...changes })));
   assert.throws(() => parseEnvelope('{'));
   assert.throws(() => parseEnvelope(' '.repeat(4_000_001)));
 });

@@ -5,7 +5,7 @@ import { english, t, setLocale, getLocale } from '../i18n.mjs';
 test('English translations cover every static label and literal UI message', async () => {
   const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const sources = new Set([...html.matchAll(/data-i18n(?:-(?:aria-label|placeholder))?="([^"]+)"/g)].map(match => match[1].replaceAll('&quot;', '"').replaceAll('&amp;', '&')));
-  for (const file of ['app.mjs','pwa.mjs','drive-ui.mjs','drive.mjs','crypto.mjs','vault.mjs','csv.mjs']) {
+  for (const file of ['app.mjs','api-keys.mjs','pwa.mjs','drive-ui.mjs','drive.mjs','crypto.mjs','vault.mjs','csv.mjs']) {
     const text = await readFile(new URL('../' + file, import.meta.url), 'utf8');
     for (const match of text.matchAll(/'((?:\\.|[^'\\])*)'/g)) if (/[А-Яа-яЁё]/.test(match[1])) sources.add(match[1]);
   }

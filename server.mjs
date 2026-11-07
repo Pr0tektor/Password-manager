@@ -6,7 +6,7 @@ export const CSP = "default-src 'none'; script-src 'self' https://accounts.googl
 const root = fileURLToPath(new URL('.', import.meta.url));
 const files = new Map([['/', ['index.html', 'text/html; charset=utf-8']], ['/index.html', ['index.html', 'text/html; charset=utf-8']], ['/styles.css', ['styles.css', 'text/css; charset=utf-8']], ['/app.mjs', ['app.mjs', 'text/javascript; charset=utf-8']], ['/crypto.mjs', ['crypto.mjs', 'text/javascript; charset=utf-8']], ['/vault.mjs', ['vault.mjs', 'text/javascript; charset=utf-8']], ['/icon.svg', ['icon.svg', 'image/svg+xml']]]);
 files.set('/csv.mjs', ['csv.mjs', 'text/javascript; charset=utf-8']);
-for (const name of ['i18n.mjs', 'pwa.mjs', 'drive.mjs', 'drive-ui.mjs', 'config.mjs', 'session.mjs', 'sw.js']) files.set(`/${name}`, [name, 'text/javascript; charset=utf-8']);
+for (const name of ['i18n.mjs', 'pwa.mjs', 'drive.mjs', 'drive-ui.mjs', 'config.mjs', 'session.mjs', 'api-keys.mjs', 'sw.js']) files.set(`/${name}`, [name, 'text/javascript; charset=utf-8']);
 for (const name of ['manifest.webmanifest', 'manifest.en.webmanifest']) files.set(`/${name}`, [name, 'application/manifest+json; charset=utf-8']);
 for (const name of ['icon-192.png', 'icon-512.png', 'icon-maskable-512.png']) files.set(`/icons/${name}`, [`icons/${name}`, 'image/png']);
 for (const name of ['USER_GUIDE_RU.md', 'USER_GUIDE_EN.md']) files.set(`/docs/${name}`, [`docs/${name}`, 'text/plain; charset=utf-8']);

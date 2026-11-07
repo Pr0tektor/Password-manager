@@ -1,6 +1,6 @@
 # Password Manager — user guide
 
-Version 1.1.1. Russian and English interfaces are included in the same app.
+Version 1.2.0. Russian and English interfaces are included in the same app.
 
 ## 1. What is included
 
@@ -58,7 +58,7 @@ Storage belongs to a browser profile and an exact origin. localhost:4173 and 127
 ## 5. Add and use entries
 
 1. Click **Add entry**.
-2. Enter a name and password; both are required.
+2. Enter a name and either a password or at least one API key. For an API-only entry, the account password can stay empty.
 3. Optionally add a username/email, website and note.
 4. Enter a full website address or omit https://; the app adds it when saving. Android app addresses imported from Chrome are also preserved.
 5. Click **Save entry**. Wait for the successful-save message before treating the entry as saved.
@@ -68,6 +68,19 @@ Search matches names, usernames and websites, not passwords or notes. The button
 Click **Show** inside the editor to reveal the password for 15 seconds. **Hide** conceals it sooner. Deleting an entry requires a separate confirmation; Cancel leaves it unchanged. A deleted entry can only be recovered from an earlier backup.
 
 The clipboard is not cleared automatically. Your operating system’s clipboard history or sync may retain copied passwords. If clipboard access is denied, open the entry and copy the value manually.
+
+### Multiple API keys in one entry
+
+1. Find **API keys** in the entry editor and click **Add API key**.
+2. Enter a name such as “Production”, “Test” or “Server”, then paste the key value.
+3. Add more fields for other keys, up to 20 per entry. Names support up to 100 characters and values up to 10000.
+4. Values are concealed by default. **Show** reveals only that key for 15 seconds; backgrounding conceals it again.
+5. The two-sheet icon beside a field copies its exact value. There is no visible “Copy” label. The same icon appears beside the username, password and generated password.
+6. The cross removes a field from the form. Click **Save entry** to persist additions, changes or removals. **Cancel** leaves the saved entry unchanged.
+
+Key names and values are encrypted with the other fields, included in encrypted backups and preserved on restore. An entry can contain only API keys without an account password. Complete or remove partially filled key rows; completely empty extra rows are not saved. Key values are excluded from search.
+
+Backups containing keys require app version 1.2.0 or later. Existing backups without keys still open in the new version. Do not downgrade the app after saving keys: older versions cannot read format 2. Importing a changed key preserves the differing entry separately so the previous value is not lost.
 
 ## 6. Generate passwords
 
@@ -175,7 +188,7 @@ Data in an unlocked application’s memory is not protected against an infected 
 
 
 
-**Updating an installed PWA:** open it online, then use **Install → Update app** when offered. Check for version 1.1.1 in the footer. Do not uninstall the app or clear its data to update. If the operating system completely discards the PWA process, a new sign-in is required; the master password and key are not persisted between launches.
+**Updating an installed PWA:** open it online, then use **Install → Update app** when offered. Check for version 1.2.0 in the footer. Do not uninstall the app or clear its data to update. If the operating system completely discards the PWA process, a new sign-in is required; the master password and key are not persisted between launches.
 
 ## 16. Troubleshooting
 
@@ -194,7 +207,7 @@ Data in an unlocked application’s memory is not protected against an infected 
 
 ## 17. Technical reference
 
-AES-256-GCM, PBKDF2-HMAC-SHA-256 with 600,000 iterations, 16-byte salt, a new random 12-byte IV per save, and a 128-bit authentication tag. Format/version are authenticated through additionalData. The key is non-extractable. The encrypted local format remains compatible with version 1.0.
+AES-256-GCM, PBKDF2-HMAC-SHA-256 with 600,000 iterations, 16-byte salt, a new random 12-byte IV per save, and a 128-bit authentication tag. Format/version are authenticated through additionalData. The key is non-extractable. Legacy format 1 backups remain supported. Entries with API keys use format 2; the format version is authenticated by encryption to prevent downgrade tampering.
 
 Normal local use loads no external scripts. Opening Google Drive on demand loads Google Identity Services. Network access is limited by policy to the app origin and required Google domains. The local server prohibits form submission, objects and framing; configure equivalent headers on your own HTTPS host. User values are rendered as text, not HTML.
 

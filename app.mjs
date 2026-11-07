@@ -4,18 +4,18 @@ import { initializeDrive } from './drive-ui.mjs';
 import { generatePassword, MAX_BACKUP_BYTES, mergeEntries } from './crypto.mjs';
 import { parseChromeCsv } from './csv.mjs';
 import { VaultStore, STORAGE_KEY } from './vault.mjs';
+import { initializeSession } from './session.mjs';
 const $ = id => document.getElementById(id);
 let store;
 let editingId = null;
 let deletingId = null;
 let busy = false;
 let uiEpoch = 0;
-let idleTimer;
+let session;
 let toastTimer;
 let pendingCsvEntries = [];
 let csvReadEpoch = 0;
 const revealTimers = new Map();
-const IDLE_MS = 5 * 60 * 1000;
 
 function toast(message, error = false) {
   clearTimeout(toastTimer);
@@ -59,11 +59,10 @@ function syncAuth() {
   $('reset-button').hidden = !exists;
 }
 function resetIdle() {
-  clearTimeout(idleTimer);
-  if (store?.unlocked) idleTimer = setTimeout(() => lock(t('Хранилище заблокировано после 5 минут бездействия.')), IDLE_MS);
+  session?.activity();
 }
 function lock(message) {
-  uiEpoch++; store.lock(); clearTimeout(idleTimer);
+  uiEpoch++; store.lock(); session?.stop();
   document.dispatchEvent(new Event('vault-locked'));
   document.querySelectorAll('dialog').forEach(closeDialog);
   $('auth-form').reset(); hidePassword($('master-password'));
@@ -80,9 +79,10 @@ function showVault() {
   $('auth-error').textContent = ''; $('search').value = '';
   $('auth-view').hidden = true; $('vault-view').hidden = false; $('lock-button').hidden = false; $('local-label').hidden = true;
   document.dispatchEvent(new Event('vault-unlocked'));
-  renderEntries(); resetIdle(); $('search').focus();
+  renderEntries(); session.start(); $('search').focus();
 }
 async function action(errorId, work) {
+  if (!session.check()) return;
   if (busy) return;
   const epoch = uiEpoch;
   busy = true;
@@ -185,6 +185,11 @@ function refreshGenerator() {
 function initialize() {
   if (!window.isSecureContext || !crypto.subtle) throw new Error(t('Для шифрования откройте приложение через localhost или HTTPS. Запустите файл «Запустить.cmd» из папки проекта.'));
   store = new VaultStore(localStorage);
+  session = initializeSession({
+    document, window, isUnlocked: () => store.unlocked,
+    lock: reason => lock(reason === 'idle' ? t('Хранилище заблокировано после 5 минут бездействия.') : undefined),
+    onHidden: () => document.querySelectorAll('input[data-secret], #entry-password').forEach(hidePassword),
+  });
   const driveUi = initializeDrive({ store, toast, beforeConnect: () => resetIdle() });
   const pwaUi = initializePwa({ beforeReload: () => lock(), toast });
   function languageChanged() {
@@ -268,6 +273,7 @@ function initialize() {
   $('import-button').after(chromeButton);
   chromeButton.addEventListener('click', () => { clearDialog($('chrome-dialog')); $('chrome-dialog').showModal(); });
   $('chrome-file').addEventListener('change', async () => {
+    if (!session.check()) return;
     const epoch = ++csvReadEpoch; const uiBefore = uiEpoch;
     pendingCsvEntries = []; $('chrome-submit').disabled = true; $('chrome-error').textContent = '';
     const file = $('chrome-file').files[0];
@@ -276,6 +282,7 @@ function initialize() {
     try {
       if (file.size > MAX_BACKUP_BYTES) throw new Error(t('CSV слишком большой. Максимум 4 МБ.'));
       const text = await file.text();
+      if (!session.check()) return;
       if (epoch !== csvReadEpoch || uiBefore !== uiEpoch || !store.unlocked || !$('chrome-dialog').open) return;
       const parsed = parseChromeCsv(text);
       const before = store.entries; const merged = mergeEntries(before, parsed.entries);
@@ -307,10 +314,12 @@ function initialize() {
       const file = $('backup-file').files[0];
       if (!file || file.size > MAX_BACKUP_BYTES) throw new Error(t('Выберите файл резервной копии размером до 4 МБ.'));
       const epoch = uiEpoch; const text = await file.text();
+      if (!session.check()) return;
       if (epoch !== uiEpoch) return;
       let password = $('backup-password').value; $('backup-password').value = '';
       let count;
       try { count = await store.import(text, password); } finally { password = ''; }
+      if (!session.check() || epoch !== uiEpoch) return;
       closeDialog($('import-dialog')); showVault(); toast(t('Импорт завершён. Добавлено записей: {count}.', { count }));
     });
   });
@@ -325,10 +334,6 @@ function initialize() {
     input.type = 'text'; button.textContent = t('Скрыть'); button.setAttribute('aria-pressed', 'true'); button.setAttribute('aria-label', input.id === 'master-password' ? t('Скрыть мастер-пароль') : t('Скрыть пароль'));
     revealTimers.set(input.id, setTimeout(() => hidePassword(input), 15_000));
   }));
-  for (const type of ['pointerdown', 'keydown', 'input', 'wheel']) document.addEventListener(type, resetIdle, { passive: true });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) lock(); });
-  window.addEventListener('pagehide', () => lock());
-  window.addEventListener('pageshow', event => { if (event.persisted) lock(); });
   window.addEventListener('storage', event => { if (event.key === STORAGE_KEY || event.key === null) lock(t('Данные изменились в другой вкладке. Откройте хранилище заново.')); });
 }
 try { initialize(); }

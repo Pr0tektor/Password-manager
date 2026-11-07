@@ -36,7 +36,7 @@ const pairs = `
 Скачать резервную копию	Download encrypted backup
 Импортировать копию	Import encrypted backup
 Только на этом устройстве	Stored on this device
-Скачивайте копию после изменений. Автоблокировка через 5 минут и при скрытии вкладки.	Back up after making changes. Locks after 5 minutes of inactivity and whenever the app is hidden.
+Скачивайте копию после изменений. Автоблокировка через 5 минут бездействия, включая время выбора файла.	Back up after making changes. Locks after 5 minutes of inactivity, including time spent choosing a file.
 Найти по названию, логину или сайту	Search by name, username or website
 Поиск записей	Search entries
 Сервис / аккаунт	Service / account
@@ -47,7 +47,7 @@ const pairs = `
 Добавить первую запись	Add your first entry
 Данные сохраняются в зашифрованном виде в этом браузере.	Vault data is stored encrypted in this browser.
 Ваше устройство. Ваш ключ. Ваш доступ.	Your device. Your key. Your access.
-Версия 1.1	Version 1.1
+Версия 1.1.1	Version 1.1.1
 Установить приложение	Install app
 Закрыть	Close
 Приложение откроется в отдельном окне с иконкой на вашем устройстве.	Launch the app in its own window from an icon on your device.

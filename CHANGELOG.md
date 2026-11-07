@@ -1,5 +1,23 @@
 # Changelog / История изменений
 
+## 1.1.1
+
+### Русский
+
+- Исправлена блокировка мобильной PWA при выборе JSON-копии или CSV: скрытие страницы системным окном выбора файла больше не очищает форму импорта, в том числе при восстановлении в пустое хранилище.
+- Пять минут бездействия учитывают время в фоне. При возвращении и перед обработкой файла проверяется срок, даже если ОС приостановила таймеры. Просроченный сеанс нельзя продлить первым нажатием.
+- Раскрытые пароли скрываются при уходе в фон; ручная блокировка, закрытие страницы и переход на другой адрес по-прежнему завершают сеанс.
+- Обновлён офлайн-кэш и инструкции RU/EN. Формат зашифрованных копий и сохранённые данные не изменены.
+- Добавлены регрессионные проверки выбора/отмены файла, отложенных таймеров, восстановления JSON и импорта Chrome.
+
+### English
+
+- Fixed mobile PWA locking during JSON backup or CSV selection. Hiding the page for the system file picker preserves the import form, including restoration into an empty vault.
+- The five-minute inactivity limit includes background time. Resume and file handling check elapsed time even if the OS suspended timers; the first interaction cannot revive an expired session.
+- Revealed passwords are concealed in the background. Manual lock, page closure and navigation still end the session.
+- Updated offline cache and RU/EN guides. Encrypted backup format and saved data are unchanged.
+- Added regressions for file selection/cancellation, suspended timers, JSON restoration and Chrome import.
+
 ## 1.1.0
 
 ### Русский

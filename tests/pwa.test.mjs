@@ -8,7 +8,7 @@ function harness(){
   const scope='https://example.test/Password-manager/';
   const cache={addAll:async urls=>{added.push(...urls);},match:async request=>request.url.endsWith('app.mjs')?new Response('cached-module'):undefined};
   const self={location:{href:scope+'sw.js'},addEventListener:(name,fn)=>{handlers[name]=fn;},clients:{claim:async()=>{claimed++;}},skipWaiting:async()=>{skipped++;}};
-  vm.runInNewContext(source,{self,URL,caches:{open:async()=>cache,keys:async()=>['other-app-cache','password-manager-shell-old','password-manager-shell-1.1.0-pages'],delete:async name=>{deleted.push(name);}},fetch:async request=>{requests.push(request);return new Response('network');}});
+  vm.runInNewContext(source,{self,URL,caches:{open:async()=>cache,keys:async()=>['other-app-cache','password-manager-shell-old','password-manager-shell-1.1.1'],delete:async name=>{deleted.push(name);}},fetch:async request=>{requests.push(request);return new Response('network');}});
   return {handlers,added,deleted,requests,scope,get skipped(){return skipped;},get claimed(){return claimed;}};
 }
 test('both localized manifests have a stable identity, scoped relative URLs and valid install icons',async()=>{
@@ -23,7 +23,7 @@ test('service worker precaches only public shell files including complete module
   const h=harness();let install;h.handlers.install({waitUntil:task=>{install=task;}});await install;
   assert.ok(h.added.length>15);
   for(const url of h.added){assert.ok(url.startsWith(h.scope));const file=url.slice(h.scope.length)||'index.html';assert.ok((await stat(new URL('../'+file,import.meta.url))).isFile());assert.doesNotMatch(file,/\.csv$|backup\.json|token|secret/);}
-  const modules=['app.mjs','crypto.mjs','vault.mjs','csv.mjs','i18n.mjs','pwa.mjs','drive.mjs','drive-ui.mjs','config.mjs'];
+  const modules=['app.mjs','crypto.mjs','vault.mjs','csv.mjs','i18n.mjs','pwa.mjs','drive.mjs','drive-ui.mjs','config.mjs','session.mjs'];
   for(const file of modules)assert.ok(h.added.includes(h.scope+file),`Not cached: ${file}`);
 });
 test('cache rejects Google requests, unknown files, query URLs and non-GET methods',async()=>{

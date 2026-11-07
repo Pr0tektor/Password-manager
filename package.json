@@ -1,6 +1,6 @@
 {
   "name": "local-password-manager",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "type": "module",
   "description": "Локальный менеджер паролей с шифрованием в браузере",

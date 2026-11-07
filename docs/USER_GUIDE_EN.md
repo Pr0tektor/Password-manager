@@ -1,6 +1,6 @@
 # Password Manager — user guide
 
-Version 1.1. Russian and English interfaces are included in the same app.
+Version 1.1.1. Russian and English interfaces are included in the same app.
 
 ## 1. What is included
 
@@ -167,11 +167,15 @@ If an upload result is unclear, check Drive before clicking again: it might have
 
 ## 15. Locking, deletion and data safety
 
-**Lock vault** immediately hides entries. The app also locks after 5 minutes of inactivity, when the tab is hidden/closed, or when moving to another window causes the browser to hide the page. Unsaved forms are cleared. Saved data remains encrypted.
+**Lock vault** immediately hides entries. Automatic locking occurs after 5 minutes of inactivity, including time in the background or in the system file picker. Briefly choosing a file preserves the import form so you can continue without signing in again. After 5 minutes, the vault locks before handling the selected file; unlock it again. Backgrounding does not extend the deadline, and revealed passwords are concealed. Closing/reloading the page or navigating away requires a new sign-in. Locking clears unsaved forms; saved entries remain encrypted.
 
 **Reset local vault** on the unlock screen deletes the vault for this browser origin. Type DELETE to confirm in English, or УДАЛИТЬ in Russian. Without a backup, this is irreversible. It does not delete JSON files from your disk or Google Drive. After a reset, restore a backup or create a new vault.
 
 Data in an unlocked application’s memory is not protected against an infected operating system, malicious browser extensions or modified application code. JavaScript cannot guarantee complete erasure of strings from memory. A strong master passphrase, updated OS and trustworthy browser remain necessary. Consider how your OS backs up browser profiles and files.
+
+
+
+**Updating an installed PWA:** open it online, then use **Install → Update app** when offered. Check for version 1.1.1 in the footer. Do not uninstall the app or clear its data to update. If the operating system completely discards the PWA process, a new sign-in is required; the master password and key are not persisted between launches.
 
 ## 16. Troubleshooting
 
